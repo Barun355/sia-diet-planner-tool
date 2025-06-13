@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id            String   @id @default(uuid())
+  firstName     String
+  lastName      String
+  contactNumber Int
+  role          Role
+  createdAt     DateTime
+  updatedAt     DateTime
+
+  client        Clients[]   @relation("User")
+  clientCoach   Clients?    @relation("ClientCoach")
+  mealCreatedBy MeanPlans[] @relation("MealCreatedBy")
+}
+
+enum Role {
+  CLIENT
+  TEAM
+  ADMIN
+}
+
+model Clients {
+  id        String   @id @default(uuid())
+  userId    String
+  coachId   String?  @unique()
+  createdAt DateTime
+  updatedAt DateTime
+
+  clientMeal MeanPlans[] @relation("MealClient")
+
+  user        Users  @relation("User", fields: [userId], references: [id], onDelete: Cascade)
+  clientCoach Users? @relation("ClientCoach", fields: [coachId], references: [id], onDelete: Cascade)
+}
+
+model MeanPlans {
+  id        String @id @default(uuid())
+  createdBy String
+  clientId  String
+
+  meals Json
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  client        Clients @relation("MealClient", fields: [clientId], references: [id], onDelete: Cascade)
+  mealCreatedBy Users   @relation("MealCreatedBy", fields: [createdBy], references: [id], onDelete: Cascade)
+}
