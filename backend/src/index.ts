@@ -1,29 +1,64 @@
-import { config } from "dotenv"
-config()
+import { config } from "dotenv";
+config();
 
 import express from "express";
 import cors from "cors";
-
+import multer from "multer";
+import { clerkMiddleware } from "@clerk/express";
 
 const PORT = process.env.PORT || 8080;
-const app = express()
+const app = express();
 
-app.use(cors({
-    origin: "*"
-}))
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage });
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://192.168.1.6:5173"],
+    credentials: true,
+  })
+);
 
-app.use(express.json())
+app.use(express.json());
 
-app.use('/api/v1/test', (_, res) => {
-    res.json({
-        message: "Server is running",
-	data: null,
-	error: null
-    });
-    return;
-})
+// Test route
+app.use("/api/v1/test", (_, res) => {
+  res.json({
+    message: "Server is running",
+    data: null,
+    error: null,
+  });
+  return;
+});
 
+// Route imports
+import mealRoute from "./routers/meal.route";
+import clientRoute from "./routers/client.route";
+import { authorize } from "./middleware/auth.middleware";
+
+// routing based on the api endpoints
+app.use(
+  "/api/v1/meal",
+  clerkMiddleware(),
+  authorize(["admin", "team"]),
+  upload.array("diet-images"),
+  mealRoute
+);
+app.use(
+  "/api/v1/client",
+  clerkMiddleware(),
+  authorize(["admin", "team"]),
+  clientRoute
+);
+
+// serving ther server on PORT
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-})
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

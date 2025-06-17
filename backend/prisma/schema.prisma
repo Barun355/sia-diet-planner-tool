@@ -14,17 +14,17 @@ datasource db {
 }
 
 model Users {
-  id            String   @id @default(uuid())
+  id            String    @id
   firstName     String
   lastName      String
+  email         String
   contactNumber Int
   role          Role
   createdAt     DateTime
-  updatedAt     DateTime
+  updatedAt     DateTime?
 
   client        Clients[]   @relation("User")
-  clientCoach   Clients?    @relation("ClientCoach")
-  mealCreatedBy MeanPlans[] @relation("MealCreatedBy")
+  mealCreatedBy MealPlans[] @relation("MealCreatedBy")
 }
 
 enum Role {
@@ -34,27 +34,26 @@ enum Role {
 }
 
 model Clients {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
-  coachId   String?  @unique()
-  createdAt DateTime
-  updatedAt DateTime
+  coachId   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 
-  clientMeal MeanPlans[] @relation("MealClient")
+  clientMeal MealPlans[] @relation("MealClient")
 
-  user        Users  @relation("User", fields: [userId], references: [id], onDelete: Cascade)
-  clientCoach Users? @relation("ClientCoach", fields: [coachId], references: [id], onDelete: Cascade)
+  user Users @relation("User", fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model MeanPlans {
+model MealPlans {
   id        String @id @default(uuid())
   createdBy String
   clientId  String
 
   meals Json
 
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 
   client        Clients @relation("MealClient", fields: [clientId], references: [id], onDelete: Cascade)
   mealCreatedBy Users   @relation("MealCreatedBy", fields: [createdBy], references: [id], onDelete: Cascade)
