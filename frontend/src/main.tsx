@@ -57,7 +57,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
+  <StrictMode>
     <ClerkProvider
       publishableKey={CLERK_PUBLISHABLE_KEY}
       afterSignOutUrl="/login"
@@ -65,5 +65,5 @@ createRoot(document.getElementById("root")!).render(
       <RouterProvider router={router} />
       <Toaster position="top-center" className="text-orange-400" />
     </ClerkProvider>
-  // </StrictMode>
+  </StrictMode>
 );
