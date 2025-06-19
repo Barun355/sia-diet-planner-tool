@@ -26,9 +26,10 @@ import axios from "axios";
 import { Label } from "@/components/ui/label";
 import { useUserStore } from "@/store/user.store";
 import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 const newMealPlanSchema = z.object({
-  clienId: z.string(),
+  clientId: z.string(),
 });
 
 const TeamMeal = () => {
@@ -37,10 +38,12 @@ const TeamMeal = () => {
   const clientList = useUserStore(state => state.clientList)
   const { getToken } = useAuth()
 
+  const navigate = useNavigate()
+
   const form = useForm<z.infer<typeof newMealPlanSchema>>({
     resolver: zodResolver(newMealPlanSchema),
     defaultValues: {
-      clienId: "",
+      clientId: "",
     },
   });
 
@@ -54,13 +57,13 @@ const TeamMeal = () => {
 
     try {
       const formData = new FormData();
-      const clienId = values.clienId;
+      const clientId = values.clientId;
 
-      if (!clienId) {
+      if (!clientId) {
         toast.info("Select client first")
         return;
       }
-      formData.append("clientId", clienId);
+      formData.append("clientId", clientId);
       dietImages?.map((image) => {
         formData.append("diet-images", image);
       });
@@ -84,6 +87,8 @@ const TeamMeal = () => {
         toast.error(res.data.message);
       }
 
+      navigate(`/dashboard/history?clientId=${clientId}`)
+
       toast.success(res.data.message);
     } catch (error: any) {
       console.log(error);
@@ -91,7 +96,7 @@ const TeamMeal = () => {
     } finally {
       setIsLoadingForm(false);
       setDietImages(null)
-      form.resetField("clienId");
+      form.resetField("clientId");
     }
   };
 
@@ -113,7 +118,7 @@ const TeamMeal = () => {
         >
           <FormField
             control={form.control}
-            name="clienId"
+            name="clientId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Client</FormLabel>

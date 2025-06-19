@@ -28,6 +28,8 @@ export function LoginForm({
         identifier: email,
         password
       });
+
+      console.log(result)
         
       if (result?.status === "complete") {
         if (typeof setActive === "function"){

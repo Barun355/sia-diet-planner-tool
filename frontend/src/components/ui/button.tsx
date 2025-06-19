@@ -69,10 +69,10 @@ function Button({
           r="20"
           fill="none"
           stroke="orange"
-          stroke-width="8"
-          stroke-linecap="round"
-          stroke-dasharray="31.416"
-          stroke-dashoffset="31.416"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray="31.416"
+          strokeDashoffset="31.416"
           opacity="0.3"
         />
         <circle
@@ -81,10 +81,10 @@ function Button({
           r="20"
           fill="none"
           stroke="orange"
-          stroke-width="8"
-          stroke-linecap="round"
-          stroke-dasharray="31.416"
-          stroke-dashoffset="15.708"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray="31.416"
+          strokeDashoffset="15.708"
         >
           <animateTransform
             attributeName="transform"

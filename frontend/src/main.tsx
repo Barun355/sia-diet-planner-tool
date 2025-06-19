@@ -11,6 +11,7 @@ import Meals from "./pages/Dashboard/meals.tsx";
 import Clients from "./pages/Dashboard/clients.tsx";
 import { Toaster } from "sonner";
 import ClientHistory from "./pages/Dashboard/client/client-history.tsx";
+import UsersPage from "./pages/Dashboard/users.tsx";
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
+        path: "users",
+        element: <UsersPage />,
+      },
+      {
         path: "meals",
         element: <Meals />,
       },
@@ -52,7 +57,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
     <ClerkProvider
       publishableKey={CLERK_PUBLISHABLE_KEY}
       afterSignOutUrl="/login"
@@ -60,5 +65,5 @@ createRoot(document.getElementById("root")!).render(
       <RouterProvider router={router} />
       <Toaster position="top-center" className="text-orange-400" />
     </ClerkProvider>
-  </StrictMode>
+  // </StrictMode>
 );

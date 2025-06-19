@@ -21,9 +21,15 @@ const navItems = [
     icon: <HomeIcon className="h-20 w-20 font-bold text-orange-600" />,
   },
   {
+    title: "Users",
+    url: "/dashboard/users",
+    role: ["admin"],
+    icon: <User className="h-20 w-20 font-bold text-orange-600" />,
+  },
+  {
     title: "Meals Plan",
     url: "/dashboard/meals",
-    role: ["client", "team", "admin"],
+    role: ["team"],
     icon: <Map className="h-20 w-20 font-bold text-orange-600" />,
   },
   {

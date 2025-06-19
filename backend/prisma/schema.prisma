@@ -17,13 +17,13 @@ model Users {
   id            String    @id
   firstName     String
   lastName      String
-  email         String
-  contactNumber Int
+  email         String?    @unique()
+  contactNumber String?
   role          Role
   createdAt     DateTime
   updatedAt     DateTime?
 
-  client        Clients[]   @relation("User")
+  client        Clients?    @relation("User")
   mealCreatedBy MealPlans[] @relation("MealCreatedBy")
 }
 
@@ -35,7 +35,7 @@ enum Role {
 
 model Clients {
   id        String    @id @default(uuid())
-  userId    String
+  userId    String    @unique()
   coachId   String
   createdAt DateTime  @default(now())
   updatedAt DateTime?

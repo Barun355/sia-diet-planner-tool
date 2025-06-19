@@ -49,6 +49,7 @@ router.post("/new", async (req, res) => {
       return;
     }
     const { userId } = getAuth(req);
+    console.log(typeof response, response)
     const mealPlan = await prisma.mealPlans.create({
       data: {
         createdBy: userId as any,
@@ -81,5 +82,27 @@ router.post("/new", async (req, res) => {
     return;
   }
 });
+
+router.post("/history/:clientId", async (req, res) => {
+
+  const { clientId } = req.params;
+
+  const mealHistory = await prisma.mealPlans.findMany({
+    where: {
+      clientId,
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
+  })
+
+  res.json({
+    data: mealHistory,
+    message: "History retrevied",
+    error: null
+  })
+  return;
+
+})
 
 export default router;

@@ -1,4 +1,4 @@
-export type RoleType = 'admin' | 'client' | 'team'
+export type RoleType = "admin" | "client" | "team";
 
 export type MealDetail = {
   diet: string;
@@ -26,36 +26,44 @@ export type DietPlan = {
 };
 
 export interface MealPlans {
-    id: string;
-    meals: DietPlan;
-    createdBy: string;
-    clientId: string;
+  id: string;
+  meals: DietPlan;
+  createdBy: string;
+  clientId: string;
 
-    createdAt: Date;
-    updatedAt?: Date;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
-interface UserInterface {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    contactNumber: string;
-    role: RoleType;
+export interface UserInterface {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  role: RoleType;
 
-    createdAt: Date;
-    updatedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ClientInterface {
-    id: string;
-    coachId: string;
-    clientMean: MealPlans[]
-    user: UserInterface
+  id: string;
+  coachId: string;
+  clientMean: MealPlans[];
+  user: UserInterface;
 }
 
 export interface ClientTableInterface {
-    id: string;
-    coachId: string;
-    userName: string;
+  id: string;
+  coachId: string;
+  userName: string;
+}
+
+export interface TeamInterface {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string
 }

@@ -13,7 +13,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BACKEND_BASE_ROUTE, ROUTE_CLIENT } from "@/lib/constant";
+import {
+  BACKEND_BASE_ROUTE,
+  ROUTE_CLIENT,
+  ROUTE_TEAM,
+  ROUTE_USER,
+} from "@/lib/constant";
 import { useUserStore } from "@/store/user.store";
 import { SignedIn, useAuth, UserButton, useUser } from "@clerk/clerk-react";
 import axios from "axios";
@@ -24,8 +29,8 @@ import { toast } from "sonner";
 
 const DashboardLayout = () => {
   const { user } = useUser();
-  const { setUser, setClientList } = useUserStore();
-  const { getToken } = useAuth()
+  const { setUser, setClientList, setTeamList, setUserList } = useUserStore();
+  const { getToken } = useAuth();
 
   const navigate = useNavigate();
 
@@ -40,32 +45,81 @@ const DashboardLayout = () => {
     }
   }, [user]);
 
-
   useEffect(() => {
     (async () => {
-      
       try {
-        const token = await getToken()
+        const token = await getToken();
+        const role = user?.publicMetadata.role;
+
         if (!token) {
-          toast.error("Please login first")
+          toast.error("Please login first");
           return;
         }
-        const res: any = await axios.get(`${BACKEND_BASE_ROUTE}/${ROUTE_CLIENT}`, {
-          headers: {
-            authorization: `Bearer ${token}`
+
+        if (role === "admin" || role === "team") {
+          const res: any = await axios.get(
+            `${BACKEND_BASE_ROUTE}/${ROUTE_CLIENT}`,
+            {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (res.data.error) {
+            console.log(res.data.error);
           }
-        })
-        const data = res.data.data;
-  
-        if (data) {
-          setClientList(data)
+          const data = res.data.data;
+
+          if (data) {
+            setClientList(data);
+          }
+        }
+
+        if (role === "admin" || role === "team") {
+          const team: any = await axios.get(
+            `${BACKEND_BASE_ROUTE}/${ROUTE_TEAM}`,
+            {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (team.data.error) {
+            console.log(team.data.error);
+          }
+          const teamData = team.data.data;
+          console.log(teamData);
+
+          if (team) {
+            setTeamList(teamData);
+          }
+        }
+
+        if (role === "admin") {
+          const usersList: any = await axios.get(
+            `${BACKEND_BASE_ROUTE}/${ROUTE_USER}`,
+            {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (usersList.data.error) {
+            console.log(usersList.data.error);
+          }
+
+          if (usersList.data.data) {
+            console.log('API Call: ', usersList.data.data)
+            setUserList(usersList.data.data);
+          }
         }
       } catch (error) {
-          console.log(error)
+        console.log(error);
       }
-    })()
-  },[])
-  
+    })();
+  }, [user]);
+
   return (
     <SidebarProvider>
       <AppSidebar role={user?.publicMetadata.role as any} />

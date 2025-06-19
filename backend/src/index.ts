@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import multer from "multer";
 import { clerkMiddleware } from "@clerk/express";
+import { authorize } from "./middleware/auth.middleware";
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -21,7 +22,7 @@ const upload = multer({ storage });
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://192.168.1.6:5173"],
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
@@ -41,7 +42,8 @@ app.use("/api/v1/test", (_, res) => {
 // Route imports
 import mealRoute from "./routers/meal.route";
 import clientRoute from "./routers/client.route";
-import { authorize } from "./middleware/auth.middleware";
+import teamRoute from "./routers/team.route";
+import userRoute from "./routers/user.route"
 
 // routing based on the api endpoints
 app.use(
@@ -51,11 +53,25 @@ app.use(
   upload.array("diet-images"),
   mealRoute
 );
+
 app.use(
   "/api/v1/client",
   clerkMiddleware(),
-  authorize(["admin", "team"]),
   clientRoute
+);
+
+app.use(
+  "/api/v1/team",
+  clerkMiddleware(),
+  authorize(["admin", "team"]),
+  teamRoute
+);
+
+app.use(
+  "/api/v1/user",
+  clerkMiddleware(),
+  authorize(["admin"]),
+  userRoute
 );
 
 // serving ther server on PORT
