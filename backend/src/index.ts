@@ -8,6 +8,7 @@ import { clerkMiddleware } from "@clerk/express";
 import { authorize } from "./middleware/auth.middleware";
 
 const PORT = process.env.PORT || 8080;
+const CORS = process.env.CORS || "http://localhost:5173"
 const app = express();
 
 const storage = multer.diskStorage({
@@ -22,7 +23,7 @@ const upload = multer({ storage });
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [CORS],
     credentials: true,
   })
 );
